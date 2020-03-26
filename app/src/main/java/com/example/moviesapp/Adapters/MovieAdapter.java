@@ -18,10 +18,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
     private Context mContext;
     private List<Movie> mData;
+    private MovieInterfaceClickListener movieInterfaceClickListener;
 
-    public MovieAdapter(Context mContext, List<Movie> mData) {
+    public MovieAdapter(Context mContext, List<Movie> mData, MovieInterfaceClickListener movieInterfaceClickListener) {
         this.mContext = mContext;
         this.mData = mData;
+        this.movieInterfaceClickListener = movieInterfaceClickListener;
     }
 
     @NonNull
@@ -52,9 +54,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-
             txt_title = itemView.findViewById(R.id.item_movie_title);
             img_movie = itemView.findViewById(R.id.item_movie_img);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    movieInterfaceClickListener.onMovieClick(mData.get(getAdapterPosition()), img_movie);
+                }
+            });
         }
+    }
+
+    public interface MovieInterfaceClickListener {
+        // we will need the ImageView to make the shared animation between the two activities
+        void onMovieClick(Movie movie, ImageView movieImageView);
     }
 }

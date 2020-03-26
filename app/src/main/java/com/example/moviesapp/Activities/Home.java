@@ -5,7 +5,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.moviesapp.Adapters.MovieAdapter;
 import com.example.moviesapp.Adapters.SliderPagerAdapter;
@@ -19,7 +24,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements MovieAdapter.MovieInterfaceClickListener {
 
     private List<Slide> lstSlides;
     private ViewPager sliderPager;
@@ -66,9 +71,23 @@ public class Home extends AppCompatActivity {
         lstMovies.add(new Movie("The Martian", R.drawable.themartian));
         lstMovies.add(new Movie("Spiderman Homecoming", R.drawable.spidey));
 
-        MovieAdapter adapter1 = new MovieAdapter(this, lstMovies);
+        MovieAdapter adapter1 = new MovieAdapter(this, lstMovies, this);
         rv_movies.setAdapter(adapter1);
         rv_movies.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+    }
+
+    @Override
+    public void onMovieClick(Movie movie, ImageView movieImageView) {
+        // here we send movie information to detail activity
+        // also we will create the transition animation between the two activities
+//        Toast.makeText(this, "clicked " + movie.getTitle(), Toast.LENGTH_SHORT).show();
+
+        Intent i = new Intent(Home.this, MovieDetailActivity.class);
+        i.putExtra("title", movie.getTitle());
+        i.putExtra("imgUrl", movie.getThumbnail());
+        // lets create the animation
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(Home.this, movieImageView, "sharedName");
+        startActivity(i, options.toBundle());
     }
 
     public class SliderTimer extends TimerTask {
